@@ -12,6 +12,3 @@ def get_nba_id(player_name: str) -> str:
         return str(int(match.iloc[0]['NBAID']))
     else:
         return f"No NBAID found for {player_name}"
-
-#testing
-print(get_nba_id("Aaron Gordon"))   # should return 203932

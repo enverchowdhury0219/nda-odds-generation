@@ -3,8 +3,10 @@ import requests
 from nba_api_functions import get_nba_id
 from nba_api.stats.endpoints import playercareerstats
 
+player_name = input("Enter NBA player name: ")
+
 # use functions to get name
-career = playercareerstats.PlayerCareerStats(get_nba_id("LeBron James")) 
+career = playercareerstats.PlayerCareerStats(get_nba_id(player_name)) 
 
 # pandas data frames
 nba_data_frame = career.get_data_frames()[0]
