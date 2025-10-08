@@ -32,4 +32,4 @@ nba_json = json.loads(games_json)
 
 df = format_nba_scoreboard(nba_json)
 
-print(games_json)
+print(df)
