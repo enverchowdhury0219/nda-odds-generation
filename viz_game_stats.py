@@ -30,9 +30,9 @@ df["WIN"] = df["WL"].map({"W": 1, "L": 0})
 # plt.tight_layout()
 # plt.show()
 
-# -----------------------------
-# 4️⃣ Win Rate by Season
-# -----------------------------
+
+# Win Rate by Season: Shows the percentage of games LeBron’s teams won
+# each season, highlighting how his success rate changes year to year.
 win_rate = df.groupby("season")["WIN"].mean()
 
 plt.figure(figsize=(10, 4))
@@ -44,9 +44,9 @@ plt.grid(axis="y", linestyle="--", alpha=0.4)
 plt.tight_layout()
 plt.show()
 
-# -----------------------------
-# 5️⃣ Rolling 20-Game Win % Trend
-# -----------------------------
+# Rolling 20-Game Win % Trend:Plots the moving average of wins across
+# the last 20 games to reveal short-term streaks and performance momentum 
+# over time.
 df["rolling_win_rate"] = df["WIN"].rolling(window=20, min_periods=5).mean()
 
 plt.figure(figsize=(14, 4))

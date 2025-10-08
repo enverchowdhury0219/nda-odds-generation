@@ -65,11 +65,6 @@ def get_all_games(player_id):
     if sort_keys:
         combined = combined.sort_values(sort_keys).reset_index(drop=True)
 
-    # optional: ensure numeric for common stat cols
-    for c in ["PTS","REB","AST","STL","BLK","TOV","FGM","FGA","FG3M","FG3A","FTM","FTA","PLUS_MINUS","MIN"]:
-        if c in combined.columns:
-            combined[c] = pd.to_numeric(combined[c], errors="coerce")
-
     return combined
 
 # ---- usage ----
