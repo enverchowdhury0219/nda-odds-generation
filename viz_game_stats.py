@@ -1,11 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 df = pd.read_csv("data/lebron_core_games.csv")
 
 # Parse dates and ensure proper sorting
 df["GAME_DATE"] = pd.to_datetime(df["GAME_DATE"])
 df = df.sort_values("GAME_DATE").reset_index(drop=True)
+
+# Keep only valid W/L rows
+df = df[df["WL"].isin(["W", "L"])].copy()
+df["WIN"] = df["WL"].map({"W": 1, "L": 0})
+
 
 # Win Rate by Season: Shows the percentage of games LeBron’s teams won
 # each season, highlighting how his success rate changes year to year.
