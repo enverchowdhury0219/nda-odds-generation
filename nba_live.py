@@ -2,6 +2,7 @@ from nba_api.live.nba.endpoints import scoreboard
 import pandas as pd
 import json
 
+
 # Today's Score Board
 games = scoreboard.ScoreBoard()
 games_json = games.get_json()
