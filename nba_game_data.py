@@ -67,9 +67,10 @@ def get_all_games(player_id):
 
     return combined
 
-# ---- usage ----
+
 player_id = 2544  # your resolved id
 df = get_all_games(player_id)
+# filtering main columns
 core_cols = [
     "GAME_DATE", "MATCHUP", "WL", "MIN", "PTS", "REB", "AST",
     "STL", "BLK", "TOV", "FGM", "FGA", "FG_PCT",
