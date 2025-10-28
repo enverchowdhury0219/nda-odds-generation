@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# adding this comment from cursor to see if if works!
 
 df = pd.read_csv("data/lebron_core_games.csv")
 
