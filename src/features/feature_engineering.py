@@ -57,8 +57,6 @@ Primary artifacts:
 - `lebron_features`: enriched feature table (target = PTS, exogenous features = all engineered columns).
 """
 
-refined = pd.read_csv("lebron_core_games.csv")
-
 def prepare_lebron_timeseries(df: pd.DataFrame) -> pd.DataFrame:
     ts = df.copy()
 
@@ -94,10 +92,6 @@ def prepare_lebron_timeseries(df: pd.DataFrame) -> pd.DataFrame:
     ts["GAME_NUM"] = range(1, len(ts) + 1)
 
     return ts
-
-# Usage:
-lebron_ts = prepare_lebron_timeseries(refined)
-print(lebron_ts)
 
 def add_rolling_form_features(ts: pd.DataFrame,
                               stats=None,
@@ -160,20 +154,3 @@ def build_lebron_feature_table(lebron_ts: pd.DataFrame) -> pd.DataFrame:
     df = df.dropna(subset=["PTS_roll_mean_3", "MIN_roll_mean_5", "OPP_MEAN_PTS_PRIOR"])
 
     return df
-
-lebron_ts = prepare_lebron_timeseries(refined)
-lebron_features = build_lebron_feature_table(lebron_ts)
-
-print(lebron_features.shape)
-print(lebron_features[[
-    "PTS",
-    "HOME",
-    "PTS_roll_mean_3",
-    "PTS_roll_mean_5",
-    "MIN_roll_mean_5",
-    "DAYS_SINCE_PREV",
-    "IS_BACK_TO_BACK",
-    "OPP_TEAM_ABBR",
-    "OPP_MEAN_PTS_PRIOR",
-    "OPP_NUM_PRIOR_MATCHUPS"
-]].head(15))
