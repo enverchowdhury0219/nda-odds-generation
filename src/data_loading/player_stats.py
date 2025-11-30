@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 #nba api calls
-from nba_api_functions import get_nba_id
+from src.data_loading.nba_api_functions import get_nba_id
 from nba_api.stats.endpoints import playercareerstats
 
 player_name = input("Enter NBA player name: ")
