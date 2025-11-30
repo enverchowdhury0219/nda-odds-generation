@@ -1,4 +1,61 @@
 import pandas as pd
+"""
+LeBron Time-Series Feature Engineering Pipeline
+------------------------------------------------
+Purpose:
+- Build a per-game time series for LeBron from `lebron_core_games.csv`.
+- Engineer non-leaky features (form, schedule, opponent history) for ARIMAX-style models
+  to predict future points (or other stats).
+
+Data flow:
+1. `refined` (raw per-game logs from NBA API CSV)
+      ↓
+2. `prepare_lebron_timeseries(refined)` → `lebron_ts`
+      ↓
+3. `build_lebron_feature_table(lebron_ts)` → `lebron_features` (final modeling table)
+
+Functions:
+
+- prepare_lebron_timeseries(df)
+  - Filters to regular season games only.
+  - Parses and sorts by GAME_DATE, then sets it as the time index.
+  - Creates `HOME` flag from MATCHUP (1 = home, 0 = away).
+  - Extracts `OPP_TEAM_ABBR` from MATCHUP (e.g., "CLE @ SAC" → "SAC").
+  - Casts key stat columns to numeric and drops rows with missing PTS.
+  - Adds `GAME_NUM` as a simple chronological game counter.
+
+- add_rolling_form_features(ts, stats=None, windows=(3, 5, 10))
+  - For each stat (PTS, MIN, FGA, etc.), computes rolling means and std devs over
+    the specified windows.
+  - Uses `shift(1)` so every row only sees past games (no data leakage).
+  - Encodes recent form (e.g., `PTS_roll_mean_3` = last 3 games' average points).
+
+- add_schedule_features(ts)
+  - Computes `DAYS_SINCE_PREV` from the time index (days between games).
+  - Derives schedule flags:
+      * `IS_BACK_TO_BACK` (1 if played yesterday).
+      * `IS_LONG_REST`    (1 if ≥ 4 days off).
+  - Adds `MIN_roll_mean_5` as recent minutes load, using past games only.
+
+- add_opponent_history_features(ts)
+  - For each opponent (`OPP_TEAM_ABBR`), computes:
+      * `OPP_MEAN_PTS_PRIOR`: average PTS vs that team *before* the current game.
+      * `OPP_NUM_PRIOR_MATCHUPS`: count of prior games vs that team.
+  - Fills first-encounter NaNs with overall career mean PTS (for mean) and 0 (for count).
+  - Encodes opponent-specific tendencies and matchup history.
+
+- build_lebron_feature_table(lebron_ts)
+  - Orchestrator: starts from `lebron_ts` and sequentially:
+      * Adds rolling form features.
+      * Adds schedule/fatigue features.
+      * Adds opponent history features.
+  - Drops early games where key engineered features are still NaN.
+  - Returns `lebron_features`: the full feature matrix ready for ARIMAX / ML models.
+
+Primary artifacts:
+- `lebron_ts`: clean chronological per-game time series with basic context.
+- `lebron_features`: enriched feature table (target = PTS, exogenous features = all engineered columns).
+"""
 
 refined = pd.read_csv("lebron_core_games.csv")
 
