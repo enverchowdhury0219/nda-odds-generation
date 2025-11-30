@@ -101,16 +101,17 @@ def add_schedule_features(ts: pd.DataFrame) -> pd.DataFrame:
 def add_opponent_history_features(ts: pd.DataFrame) -> pd.DataFrame:
     df = ts.copy()
 
+    # Groupby once to reuse
+    g = df.groupby("OPP_TEAM_ABBR")["PTS"]
+
     # Average PTS vs this opponent *before* current game
-    df["OPP_MEAN_PTS_PRIOR"] = (
-        df.groupby("OPP_TEAM_ABBR")["PTS"]
-          .apply(lambda s: s.shift(1).expanding().mean())
+    df["OPP_MEAN_PTS_PRIOR"] = g.transform(
+        lambda s: s.shift(1).expanding().mean()
     )
 
     # Number of prior games vs opponent
-    df["OPP_NUM_PRIOR_MATCHUPS"] = (
-        df.groupby("OPP_TEAM_ABBR")["PTS"]
-          .apply(lambda s: s.shift(1).expanding().count())
+    df["OPP_NUM_PRIOR_MATCHUPS"] = g.transform(
+        lambda s: s.shift(1).expanding().count()
     )
 
     # Fill initial NaNs (first encounter vs each team)
@@ -119,6 +120,7 @@ def add_opponent_history_features(ts: pd.DataFrame) -> pd.DataFrame:
     df["OPP_NUM_PRIOR_MATCHUPS"] = df["OPP_NUM_PRIOR_MATCHUPS"].fillna(0)
 
     return df
+
 
 def build_lebron_feature_table(lebron_ts: pd.DataFrame) -> pd.DataFrame:
     df = lebron_ts.copy()
@@ -140,8 +142,9 @@ def build_lebron_feature_table(lebron_ts: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-# Usage:
+lebron_ts = prepare_lebron_timeseries(refined)
 lebron_features = build_lebron_feature_table(lebron_ts)
+
 print(lebron_features.shape)
 print(lebron_features[[
     "PTS",
