@@ -220,5 +220,12 @@ if __name__ == "__main__":
     # Run a quick end-to-end training + evaluation when this file
     # is executed directly: `python src/models/arima_lebron_simple.py`
     model_fit, metrics, y_train, y_test = train_and_evaluate_arima()
+    
+     # Predict LeBron's next game PTS
+    next_game_pred = model_fit.forecast(steps=1)
+    print("Predicted next-game points:", float(next_game_pred))
+
+    
+
 
 
